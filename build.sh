@@ -1,5 +1,4 @@
 #!/bin/bash
-#!/bin/bash
 
 # Exit immediately if any command fails.
 # This protects you from uploading a broken binary.
