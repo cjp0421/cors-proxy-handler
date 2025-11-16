@@ -9,7 +9,7 @@ set -e
 # function.zip = the deployment package uploaded to AWS Lambda
 rm -f bootstrap function.zip
 
-echo "Building Go binary for AWS Lambda..."
+echo "▶️ Building Go binary for AWS Lambda..."
 
 # Compile the Go program for the AWS Lambda platform:
 #   GOOS=linux   → Lambda runs Linux under the hood
@@ -18,16 +18,14 @@ echo "Building Go binary for AWS Lambda..."
 # The output file *must* be named "bootstrap" for a custom Go runtime.
 GOOS=linux GOARCH=amd64 go build -o bootstrap
 
-echo "Zipping deployment package..."
+echo "📦 Creating deployment package..."
 
-# Create the deployment ZIP file that Lambda expects.
+# Zip the bootstrap binary — this is what Lambda executes.
 # It contains only the 'bootstrap' executable.
 zip function.zip bootstrap
 
-echo "Done! Upload function.zip to AWS Lambda."
+echo "✅ Done! Upload function.zip to your Lambda function."
 
 # to use this script to produce a zip file to upload to AWS, in the terminal run:
 # chmod +x build.sh
 # ./build.sh
-
-
