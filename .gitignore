@@ -1,0 +1,25 @@
+# Build artifacts
+bootstrap
+bootstrap.exe
+*.exe
+*.out
+
+# AWS deployment packages
+function.zip
+*.zip
+
+# Go build cache
+bin/
+vendor/
+*.a
+
+# macOS crap
+.DS_Store
+
+# VSCode / editor folders
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
