@@ -16,7 +16,7 @@ a **production version**, and a **simplified teaching example** used in document
 
 ```
 /
-├─ main.go                 # Production handler used in AWS Lambda
+├─ main.go                # Production handler used in AWS Lambda
 ├─ main_test.go           # Integration-style tests using httptest.Server
 ├─ example/
 │   └─ main_example.go    # Minimal teaching/demo version of the handler
