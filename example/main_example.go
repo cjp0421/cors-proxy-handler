@@ -24,9 +24,18 @@ func handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.API
 		return serverError(fmt.Errorf("missing API key"))
 	}
 
+	// 1b. Get the base URL for the upstream API from environment variables.
+	//     You will set BASE_URL in the Lambda console.
+	baseURL := os.Getenv("BASE_URL")
+	if baseURL == "" {
+		// Missing BASE_URL = misconfigured server, not the user's fault.
+		return serverError(fmt.Errorf("missing BASE_URL"))
+	}
+
 	// 2. Build the upstream API URL.
-	//    Replace this example URL with the real API you want to call.
-	upstreamURL := fmt.Sprintf("https://example.com/data?apikey=%s", apiKey)
+	//    Replace this example path with the real endpoint you want to call.
+	//    BASE_URL comes from the environment; the API key is added as a query parameter.
+	upstreamURL := fmt.Sprintf("%s/data?apikey=%s", baseURL, apiKey)
 
 	// 3. Make the HTTP request to the upstream API.
 	resp, err := http.Get(upstreamURL)
