@@ -17,7 +17,7 @@ import (
 //   - calls the French Solar System API for that body
 //   - passes your API key as a Bearer token in the Authorization header
 //   - returns the JSON response to the browser with CORS headers.
-func handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayProxyResponse, error) {
 	// 1. Read API key from environment variable.
 	//    You will configure API_KEY in the Lambda console.
 	apiKey := os.Getenv("API_KEY")

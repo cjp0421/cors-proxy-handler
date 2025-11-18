@@ -45,7 +45,7 @@ func TestHandler_Success(t *testing.T) {
 	t.Setenv("UPSTREAM_BASE_URL", ts.URL)
 
 	// 3. Build a fake API Gateway request with ?id=earth.
-	req := events.APIGatewayProxyRequest{
+	req := events.APIGatewayV2HTTPRequest{
 		QueryStringParameters: map[string]string{
 			"id": "earth",
 		},
@@ -82,7 +82,7 @@ func TestHandler_MissingID(t *testing.T) {
 	t.Setenv("API_KEY", "TEST_KEY")
 	// UPSTREAM_BASE_URL not needed; handler should fail before calling upstream.
 
-	req := events.APIGatewayProxyRequest{
+	req := events.APIGatewayV2HTTPRequest{
 		QueryStringParameters: map[string]string{}, // no "id"
 	}
 
@@ -106,7 +106,7 @@ func TestHandler_MissingAPIKey(t *testing.T) {
 	// Ensure API_KEY is not set.
 	os.Unsetenv("API_KEY")
 
-	req := events.APIGatewayProxyRequest{
+	req := events.APIGatewayV2HTTPRequest{
 		QueryStringParameters: map[string]string{
 			"id": "earth",
 		},
@@ -160,7 +160,7 @@ func TestHandler_Upstream500(t *testing.T) {
 	t.Setenv("UPSTREAM_BASE_URL", ts.URL)
 
 	// 3. Fake API Gateway request (?id=earth).
-	req := events.APIGatewayProxyRequest{
+	req := events.APIGatewayV2HTTPRequest{
 		QueryStringParameters: map[string]string{
 			"id": "earth",
 		},

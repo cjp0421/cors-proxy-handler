@@ -15,7 +15,7 @@ import (
 // handler is the core function that AWS Lambda runs for each request.
 //
 // The goal: absolutely minimal proxy logic with clean errors and CORS.
-func handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayProxyResponse, error) {
 	// 1. Get the API key from environment variables.
 	//    You will set API_KEY in the Lambda console.
 	apiKey := os.Getenv("API_KEY")
