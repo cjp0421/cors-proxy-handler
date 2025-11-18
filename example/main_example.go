@@ -15,7 +15,7 @@ import (
 // handler is the core function that AWS Lambda runs for each request.
 //
 // The goal: absolutely minimal proxy logic with clean errors and CORS.
-func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayProxyResponse, error) {
+func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
 	// 1. Get the API key from environment variables.
 	//    You will set API_KEY in the Lambda console.
 	apiKey := os.Getenv("API_KEY")
@@ -53,7 +53,7 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.AP
 
 	// 5. Return the upstream response directly to the browser.
 	//    We forward the upstream status code, body, and add required CORS headers.
-	return events.APIGatewayProxyResponse{
+	return events.APIGatewayV2HTTPResponse{
 		StatusCode: resp.StatusCode,
 		Body:       string(bodyBytes),
 		Headers:    corsHeaders(),
@@ -62,8 +62,8 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.AP
 
 // clientError returns a 400-level error (bad input from the caller).
 // Useful if you want to validate query params, paths, etc.
-func clientError(msg string) (events.APIGatewayProxyResponse, error) {
-	return events.APIGatewayProxyResponse{
+func clientError(msg string) (events.APIGatewayV2HTTPResponse, error) {
+	return events.APIGatewayV2HTTPResponse{
 		StatusCode: 400,
 		Body:       fmt.Sprintf(`{"error": "%s"}`, msg),
 		Headers:    corsHeaders(),
@@ -72,8 +72,8 @@ func clientError(msg string) (events.APIGatewayProxyResponse, error) {
 
 // serverError returns a 500-level internal error.
 // We use this for any failure inside the Lambda or bad upstream behavior.
-func serverError(err error) (events.APIGatewayProxyResponse, error) {
-	return events.APIGatewayProxyResponse{
+func serverError(err error) (events.APIGatewayV2HTTPResponse, error) {
+	return events.APIGatewayV2HTTPResponse{
 		StatusCode: 500,
 		Body:       fmt.Sprintf(`{"error": "%s"}`, err.Error()),
 		Headers:    corsHeaders(),
@@ -83,8 +83,10 @@ func serverError(err error) (events.APIGatewayProxyResponse, error) {
 // corsHeaders defines minimal required CORS headers so browsers can call the Lambda.
 func corsHeaders() map[string]string {
 	return map[string]string{
-		"Content-Type":                "application/json",
-		"Access-Control-Allow-Origin": "*",
+		"Content-Type":                 "application/json",
+		"Access-Control-Allow-Origin":  "*",
+		"Access-Control-Allow-Methods": "GET,OPTIONS",
+		"Access-Control-Allow-Headers": "Content-Type",
 	}
 }
 
