@@ -17,7 +17,7 @@ import (
 //   - calls the French Solar System API for that body
 //   - passes your API key as a Bearer token in the Authorization header
 //   - returns the JSON response to the browser with CORS headers.
-func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayProxyResponse, error) {
+func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
 	// 1. Read API key from environment variable.
 	//    You will configure API_KEY in the Lambda console.
 	apiKey := os.Getenv("API_KEY")
@@ -86,7 +86,7 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.AP
 	//    - We forward the status code from the upstream API.
 	//    - We return the raw JSON body as-is.
 	//    - We attach CORS headers so your frontend can call this Lambda.
-	return events.APIGatewayProxyResponse{
+	return events.APIGatewayV2HTTPResponse{
 		StatusCode: resp.StatusCode,
 		Body:       string(bodyBytes),
 		Headers:    corsHeaders(),
@@ -95,8 +95,8 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.AP
 
 // clientError represents a 400-level response: the caller sent a bad request.
 // Example: missing query parameters, invalid values, etc.
-func clientError(msg string) (events.APIGatewayProxyResponse, error) {
-	return events.APIGatewayProxyResponse{
+func clientError(msg string) (events.APIGatewayV2HTTPResponse, error) {
+	return events.APIGatewayV2HTTPResponse{
 		StatusCode: 400,
 		Body:       fmt.Sprintf(`{"error": "%s"}`, msg),
 		Headers:    corsHeaders(),
@@ -105,8 +105,8 @@ func clientError(msg string) (events.APIGatewayProxyResponse, error) {
 
 // serverError represents a 500-level response: something went wrong on the server side.
 // Example: missing API_KEY, network error calling upstream, JSON read failures, etc.
-func serverError(err error) (events.APIGatewayProxyResponse, error) {
-	return events.APIGatewayProxyResponse{
+func serverError(err error) (events.APIGatewayV2HTTPResponse, error) {
+	return events.APIGatewayV2HTTPResponse{
 		StatusCode: 500,
 		Body:       fmt.Sprintf(`{"error": "%s"}`, err.Error()),
 		Headers:    corsHeaders(),
@@ -117,8 +117,10 @@ func serverError(err error) (events.APIGatewayProxyResponse, error) {
 // will accept the response from your Lambda when called via fetch().
 func corsHeaders() map[string]string {
 	return map[string]string{
-		"Content-Type":                "application/json",
-		"Access-Control-Allow-Origin": "*",
+		"Content-Type":                 "application/json",
+		"Access-Control-Allow-Origin":  "*",
+		"Access-Control-Allow-Methods": "GET,OPTIONS",
+		"Access-Control-Allow-Headers": "Content-Type",
 	}
 }
 
